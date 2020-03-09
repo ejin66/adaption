@@ -18,9 +18,9 @@ class Adaption {
 	Adaption._gen();
 
 	static void design(BuildContext appContext, int designPixelsWidth, int designPixelsHeight) {
-		_instance._init(appContext);
 		_instance..designPixelsWidth = designPixelsWidth
 			..designPixelsHeight = designPixelsHeight;
+		_instance._init(appContext);
 	}
 
 	bool _init(BuildContext context) {
@@ -32,7 +32,7 @@ class Adaption {
 
 		var media = MediaQuery.of(context);
 		var size = media.size;
-		if (size == Size.zero) {
+		if (size == null || size == Size.zero) {
 			return false;
 		}
 
@@ -41,8 +41,6 @@ class Adaption {
 		_instance
 			.._logicSize = size
 			..devicePixelRatio = devicePixelRatio
-			..designPixelsWidth = designPixelsWidth
-			..designPixelsHeight = designPixelsHeight
 			..scaleWidth = _instance._logicSize.width * devicePixelRatio / designPixelsWidth
 			..scaleHeight = _instance._logicSize.height / designPixelsHeight;
 		return true;

@@ -4,7 +4,17 @@ flutter logic pixels adaption
 
 # Get started
 
-### First, init adaption.
+### 1. install.
+
+```yaml
+dependencies:
+	apation:
+		git: https://github.com/ejin66/adaption
+```
+
+
+
+### 2. init adaption.
 
 ```dart
 Adaption.design(context, 1080, 1920);
@@ -31,7 +41,9 @@ MaterialApp(
 );
 ```
 
-### Second, use it.
+
+
+### 3. use it.
 
 the logic pixels by ratio in horizontal:
 

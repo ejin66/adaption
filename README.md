@@ -8,7 +8,7 @@ flutter logic pixels adaption
 
 ```yaml
 dependencies:
-  apation:
+  adaption:
     git: https://github.com/ejin66/adaption
 ```
 

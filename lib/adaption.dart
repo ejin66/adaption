@@ -64,8 +64,8 @@ class Adaption {
 		return _instance.scaleHeight * pixels ~/ _instance.devicePixelRatio;
 	}
 
-	/// ratio logic length. ratio in (0, 100]
-	static double ratio(double ratio) {
+	/// ratio logic length. ratio in [0, 1]
+	static double ratio(double ratio, , {double offset}) {
 		if (ratio < 0) ratio = 0;
 		if (ratio > 1) ratio = 1;
 
@@ -74,7 +74,7 @@ class Adaption {
 			return length;
 		}
 
-		var length = _instance._logicSize.width * ratio;
+		var length = (_instance._logicSize.width - 1 - (offset ?? 0)) * ratio;
 		return length;
 	}
 
@@ -105,8 +105,8 @@ extension AdaptionIntPixels on int {
 }
 
 extension AdaptionDoubleRatio on double {
-	double ratio() {
-		return Adaption.ratio(this);
+	double ratio({double offset}) {
+		return Adaption.ratio(this, offset: offset);
 	}
 
 	double ratioHeight() {

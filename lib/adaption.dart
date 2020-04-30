@@ -65,7 +65,7 @@ class Adaption {
 	}
 
 	/// ratio logic length. ratio in [0, 1]
-	static double ratio(double ratio, , {double offset}) {
+	static double ratio(double ratio, {double offset}) {
 		if (ratio < 0) ratio = 0;
 		if (ratio > 1) ratio = 1;
 

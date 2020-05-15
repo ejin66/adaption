@@ -35,6 +35,11 @@ class Adaption {
 		if (size == null || size == Size.zero) {
 			return false;
 		}
+		
+		if ((designPixelsHeight > designPixelsWidth && size.width > size.height) || 
+				(designPixelsWidth > designPixelsHeight && size.height > size.width)) {
+			size = Size(size.height, size.width);
+		}
 
 		var devicePixelRatio = media.devicePixelRatio;
 

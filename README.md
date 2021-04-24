@@ -1,6 +1,8 @@
 # Adaption
 
-flutter logic pixels adaption
+flutter size adaption, make app UI more adaptive in various screen sizes
+
+<img src="https://ejin66.github.io/assets/img/pexels/adaption.gif" width = "300px" />
 
 # Get started
 
@@ -8,66 +10,27 @@ flutter logic pixels adaption
 
 ```yaml
 dependencies:
-  adaption:
-    git: https://github.com/ejin66/adaption
+  adaption: ^1.0.0
 ```
-
-
 
 ### 2. init adaption.
 
 ```dart
-Adaption.design(context, 1080, 1920);
+Adaption.init(context);
 ```
-
-`1080, 1920` is the size of your design draft.
-
-> It must be called under WidgetsApp or MaterialApp widget.
-
-example:
-
-```dart
-MaterialApp(
-      title: 'Flutter Adaption Demo',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: Builder(builder: (context) {
-
-      	Adaption.design(context, 1080, 1920);
-        
-        return some_widget;
-      }
-);
-```
-
-
 
 ### 3. use it.
 
 the logic pixels by ratio in horizontal:
 
 ```dart
-0.2.ratio();
+0.2.w;
 ```
-
 
 the logic pixels by ratio in vertical:
 
 ```dart
-0.4.ratioHeight();
-```
-
-convert the pixels in the design draft to logic pixels in horizontal:
-
-```dart
-40.adaptionPixels();
-```
-
-convert the pixels in the design draft to logic pixels in vertical:
-
-```dart
-80.adaptionHeightPixels();
+0.4.h;
 ```
 
 

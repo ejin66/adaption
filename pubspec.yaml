@@ -1,11 +1,10 @@
 name: adaption
-description: size adaption
-version: 0.0.2
-author:
-homepage:
+description: size adaption, make app UI more adaptive in various screen sizes
+version: 1.0.0
+homepage: https://github.com/ejin66/adaption
 
 environment:
-  sdk: ">=2.6.0 <3.0.0"
+  sdk: ">=2.12.0 <3.0.0"
 
 dependencies:
   flutter:

@@ -3,118 +3,97 @@ library adaption;
 import 'package:flutter/material.dart';
 
 class Adaption {
+  Size? _logicSize;
+  _MetricsChangedObserver? _observer;
 
-	int designPixelsWidth;
-	int designPixelsHeight;
-	double scaleWidth;
-	double scaleHeight;
+  static Adaption _instance = Adaption._gen();
 
-	Size _logicSize;
-	double devicePixelRatio;
+  Adaption._gen();
 
+  static bool init(BuildContext context) {
+    if (_instance._logicSize != null) {
+      return true;
+    }
 
-	static Adaption _instance = Adaption._gen();
+    final window = WidgetsBinding.instance?.window;
+    if (window == null) return false;
 
-	Adaption._gen();
+    final size = window.physicalSize;
+    if (size == Size.zero) {
+      return false;
+    }
 
-	static void design(BuildContext appContext, int designPixelsWidth, int designPixelsHeight) {
-		_instance..designPixelsWidth = designPixelsWidth
-			..designPixelsHeight = designPixelsHeight;
-		_instance._init(appContext);
-	}
+    _instance._observer = _MetricsChangedObserver._(context);
 
-	bool _init(BuildContext context) {
-		if (_instance._logicSize != null) {
-			return true;
-		}
+    WidgetsBinding.instance?.addObserver(_instance._observer!);
 
-		if (context == null) return false;
+    _instance._logicSize = size / window.devicePixelRatio;
 
-		var media = MediaQuery.of(context);
-		var size = media.size;
-		if (size == null || size == Size.zero) {
-			return false;
-		}
-		
-		if ((designPixelsHeight > designPixelsWidth && size.width > size.height) || 
-				(designPixelsWidth > designPixelsHeight && size.height > size.width)) {
-			size = Size(size.height, size.width);
-		}
+    return true;
+  }
 
-		var devicePixelRatio = media.devicePixelRatio;
+  _reset() {
+    _logicSize = null;
+    if (_observer != null) WidgetsBinding.instance?.removeObserver(_observer!);
+    _observer = null;
+  }
 
-		_instance
-			.._logicSize = size
-			..devicePixelRatio = devicePixelRatio
-			..scaleWidth = _instance._logicSize.width * devicePixelRatio / designPixelsWidth
-			..scaleHeight = _instance._logicSize.height / designPixelsHeight;
-		return true;
-	}
+  /// ratio logic length. ratio in [0, 1]
+  static double ratio(double ratio, {double? offset}) {
+    if (ratio < 0) ratio = 0;
+    if (ratio > 1) ratio = 1;
 
-	/// adaption actual pixels to logic length
-	static int adaption(int pixels) {
-		if (_instance._logicSize == null) {
-			return pixels;
-		}
+    if (_instance._logicSize == null) {
+      var length = 360 * ratio;
+      return length;
+    }
 
-		return _instance.scaleWidth * pixels ~/ _instance.devicePixelRatio;
-	}
+    var length = (_instance._logicSize!.width - (offset ?? 0)) * ratio;
+    return length;
+  }
 
-	/// adaption actual pixels to logic length
-	static int adaptionHeight(int pixels) {
-		if (_instance._logicSize == null) {
-			return pixels;
-		}
+  static double ratioHeight(double ratio, {double? offset}) {
+    if (ratio < 0) ratio = 0;
+    if (ratio > 1) ratio = 1;
 
-		return _instance.scaleHeight * pixels ~/ _instance.devicePixelRatio;
-	}
+    if (_instance._logicSize == null) {
+      var length = 720 * ratio;
+      return length;
+    }
 
-	/// ratio logic length. ratio in [0, 1]
-	static double ratio(double ratio, {double offset}) {
-		if (ratio < 0) ratio = 0;
-		if (ratio > 1) ratio = 1;
-
-		if (_instance._logicSize == null) {
-			var length = 360 * ratio;
-			return length;
-		}
-
-		var length = (_instance._logicSize.width - 1 - (offset ?? 0)) * ratio;
-		return length;
-	}
-
-	static double ratioHeight(double ratio) {
-		if (ratio < 0) ratio = 0;
-		if (ratio > 1) ratio = 1;
-
-		if (_instance._logicSize == null) {
-			var length = 720 * ratio;
-			return length;
-		}
-
-		var length = _instance._logicSize.height * ratio;
-		return length;
-	}
-
-}
-
-extension AdaptionIntPixels on int {
-
-	int adaptionPixels() {
-		return Adaption.adaption(this);
-	}
-
-	int adaptionHeightPixels() {
-		return Adaption.adaptionHeight(this);
-	}
+    var length = (_instance._logicSize!.height - (offset ?? 0)) * ratio;
+    return length;
+  }
 }
 
 extension AdaptionDoubleRatio on double {
-	double ratio({double offset}) {
-		return Adaption.ratio(this, offset: offset);
-	}
+  double get w => Adaption.ratio(this);
 
-	double ratioHeight() {
-		return Adaption.ratioHeight(this);
-	}
+  double get h => Adaption.ratioHeight(this);
+
+  double wo(double offset) => Adaption.ratio(this, offset: offset);
+
+  double ho(double offset) => Adaption.ratioHeight(this, offset: offset);
+
+  @Deprecated("use [w] or [wo()] instead")
+  double ratio({double? offset}) {
+    return Adaption.ratio(this, offset: offset);
+  }
+
+  @Deprecated("use [h] or [ho()] instead")
+  double ratioHeight() {
+    return Adaption.ratioHeight(this);
+  }
+}
+
+class _MetricsChangedObserver extends WidgetsBindingObserver {
+  final BuildContext context;
+
+  _MetricsChangedObserver._(this.context);
+
+  @override
+  void didChangeMetrics() {
+    Adaption._instance._reset();
+    Adaption.init(context);
+  }
 }

@@ -10,31 +10,27 @@ class Adaption {
 
   Adaption._gen();
 
-  static bool init(BuildContext context) {
+  static bool init() {
     if (_instance._logicSize != null) {
       return true;
     }
+    _instance._reset();
 
-    final window = WidgetsBinding.instance?.window;
-    if (window == null) return false;
-
+    final window = WidgetsBinding.instance.window;
     final size = window.physicalSize;
     if (size == Size.zero) {
       return false;
     }
 
-    _instance._observer = _MetricsChangedObserver._(context);
-
-    WidgetsBinding.instance?.addObserver(_instance._observer!);
-
+    _instance._observer = _MetricsChangedObserver._();
+    WidgetsBinding.instance.addObserver(_instance._observer!);
     _instance._logicSize = size / window.devicePixelRatio;
-
     return true;
   }
 
   _reset() {
     _logicSize = null;
-    if (_observer != null) WidgetsBinding.instance?.removeObserver(_observer!);
+    if (_observer != null) WidgetsBinding.instance.removeObserver(_observer!);
     _observer = null;
   }
 
@@ -43,7 +39,7 @@ class Adaption {
     if (ratio < 0) ratio = 0;
     if (ratio > 1) ratio = 1;
 
-    if (_instance._logicSize == null) {
+    if (_instance._logicSize == null && !init()) {
       var length = 360 * ratio;
       return length;
     }
@@ -56,7 +52,7 @@ class Adaption {
     if (ratio < 0) ratio = 0;
     if (ratio > 1) ratio = 1;
 
-    if (_instance._logicSize == null) {
+    if (_instance._logicSize == null && !init()) {
       var length = 720 * ratio;
       return length;
     }
@@ -87,13 +83,11 @@ extension AdaptionDoubleRatio on double {
 }
 
 class _MetricsChangedObserver extends WidgetsBindingObserver {
-  final BuildContext context;
-
-  _MetricsChangedObserver._(this.context);
+  _MetricsChangedObserver._();
 
   @override
   void didChangeMetrics() {
     Adaption._instance._reset();
-    Adaption.init(context);
+    Adaption.init();
   }
 }

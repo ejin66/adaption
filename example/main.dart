@@ -8,7 +8,6 @@ void main() {
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    Adaption.init(context);
     return MaterialApp(
       title: 'Flutter Adaption Demo',
       theme: ThemeData(
